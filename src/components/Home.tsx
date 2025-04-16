@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Outlet } from '@tanstack/react-router';
 
-import { useUsersQuery, useCreateUser } from '../hooks/useUsersQuery.js';
+import { useUsersQuery, useCreateUser } from '../hooks/useUsersQuery';
 import { UserProvider } from "../context/UserContext";
 
 import { User } from '../types/userTypes';
@@ -35,7 +35,7 @@ const Home = () => {
 
 
     useEffect(() => {
-        if (users?.length > prevUsersRef.current.length) {
+        if (users !=  null && users?.length > prevUsersRef.current.length) {
             const newUsers = users.filter((user: User) =>
                 !prevUsersRef.current.some(prevUser => prevUser.id === user.id)
             );
@@ -97,7 +97,7 @@ const Home = () => {
                 {isLoading ? <p>Loading users...</p> :
                     <ul className="space-y-2 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-200"
                         style={{height: "600px"}}>
-                        {filteredUsers?.length > 0 ? (
+                        {filteredUsers != null && filteredUsers?.length > 0 ? (
                             filteredUsers.map((user: User) => (
                                 <li key={user.id} onClick={() => handleUserSelect(user.id)}
                                     className={`py-3 sm:py-4  pr-[4px] pl-[4px] cursor-pointer ${user.id === selectedUserId ? 'bg-blue-200' : 'bg-transparent'}`}>

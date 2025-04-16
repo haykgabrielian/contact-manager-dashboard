@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchUsers, createUser, deleteUserById, updateUserById } from "../api/usersApi";
+import { User } from '../types/userTypes';
 
 export const useUsersQuery = () => {
-    return useQuery({
+    return useQuery<User[]>({
         queryKey: ["users"],
         queryFn: fetchUsers,
         staleTime: 60000,
@@ -12,11 +13,11 @@ export const useUsersQuery = () => {
 export const useDeleteUser = () => {
     const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (userId) => deleteUserById(userId),
-        onSuccess: (id) => {
-            queryClient.setQueryData(["users"], (oldData) =>
-                oldData ? oldData.filter((user) => user.id !== id) : []
+    return useMutation<number, Error, number>({
+        mutationFn: (userId: number) => deleteUserById(userId),
+        onSuccess: (id: number) => {
+            queryClient.setQueryData<User[]>(["users"], (oldData) =>
+                oldData ? oldData.filter((user: User) => user.id !== id) : []
             );
         },
     });
@@ -25,10 +26,10 @@ export const useDeleteUser = () => {
 export const useUpdateUser = () => {
     const queryClient = useQueryClient();
 
-    return useMutation({
+    return useMutation<User, Error, { userId: number; userData: Partial<User> }>({
         mutationFn: ({ userId, userData }) => updateUserById(userId, userData),
-        onSuccess: (updatedUser) => {
-            queryClient.setQueryData(["users"], (oldData) =>
+        onSuccess: (updatedUser: User) => {
+            queryClient.setQueryData<User[]>(["users"], (oldData) =>
                 oldData
                     ? oldData.map((user) =>
                         user.id === updatedUser.id ? updatedUser : user
@@ -42,10 +43,10 @@ export const useUpdateUser = () => {
 export const useCreateUser = () => {
     const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (userData) => createUser(userData),
-        onSuccess: (newUser) => {
-            queryClient.setQueryData(["users"], (oldData) =>
+    return useMutation<User, Error, Partial<User>>({
+        mutationFn: (userData: any) => createUser(userData),
+        onSuccess: (newUser: User) => {
+            queryClient.setQueryData<User[]>(["users"], (oldData) =>
                 oldData ? [newUser, ...oldData] : [newUser]
             );
         },

@@ -32,7 +32,7 @@ export const updateUserById = async (Id, userData) => {
 };
 
 // Create User
-export const createUser = async (userData) => {
+export const createUser = async (userData: {     firstName: string;     lastName: string;     email: string; }) => {
     const response = await fetch("https://dummyjson.com/users/add", {
         method: "POST",
         headers: {

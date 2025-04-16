@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useUserContext } from "../context/UserContext";
-import { useUsersQuery, useDeleteUser, useUpdateUser, useCreateUser } from '../hooks/useUsersQuery.js';
+import { useUsersQuery, useDeleteUser, useUpdateUser, useCreateUser } from '../hooks/useUsersQuery';
 import NoImage from '../assets/images/no-image.jpg';
 import { User } from '../types/userTypes';
 import Confirmation from './modals/Confirmation';
@@ -36,7 +36,7 @@ const UserDetails = () => {
     const handleDelete = async () => {
         setPendingRequest(userId);
         try {
-            await deleteUser.mutateAsync(userId);
+            await deleteUser.mutateAsync(Number(userId));
         } catch (error) {
             console.error('Error deleting user:', error);
         } finally {
@@ -48,7 +48,7 @@ const UserDetails = () => {
     const handleUpdate = async (formData: { firstName: string; lastName: string; email: string }) => {
         setPendingRequest(userId);
         try {
-            await updateUser.mutateAsync({ userId, userData: formData });
+            await updateUser.mutateAsync({ userId: userId || 0, userData: formData });
         } catch (error) {
             console.error('Error updating user:', error);
         } finally {
